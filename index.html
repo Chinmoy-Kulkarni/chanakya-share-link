@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; connect-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"
+    >
+    <title>Opening Chanakya</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #070a10;
+        color: #e2e8f0;
+      }
+      body {
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        place-items: center;
+      }
+      main {
+        width: min(28rem, calc(100% - 2rem));
+        border: 1px solid #334155;
+        border-radius: 0.75rem;
+        background: #0f172a;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      h1 {
+        margin: 0;
+        color: #67e8f9;
+        font-size: 1.25rem;
+      }
+      p {
+        color: #94a3b8;
+        line-height: 1.5;
+      }
+      a {
+        display: inline-block;
+        border-radius: 0.5rem;
+        background: #06b6d4;
+        color: #082f49;
+        font-weight: 800;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Opening Chanakya</h1>
+      <p id="status">Connecting to the private Chanakya service...</p>
+      <a id="open-link" href="#" hidden rel="noreferrer">Open Chanakya</a>
+    </main>
+    <script>
+      (async () => {
+        const status = document.getElementById('status');
+        const link = document.getElementById('open-link');
+
+        try {
+          const response = await fetch(`target.json?v=${Date.now()}`, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`Target lookup returned ${response.status}`);
+
+          const target = new URL((await response.json()).url);
+          if (target.protocol !== 'https:' || !target.hostname.endsWith('.trycloudflare.com')) {
+            throw new Error('Target URL was not an approved Cloudflare address');
+          }
+
+          link.href = target.href;
+          link.hidden = false;
+          location.replace(target.href);
+        } catch {
+          status.textContent = 'Chanakya is temporarily unavailable. Please retry shortly.';
+        }
+      })();
+    </script>
+  </body>
+</html>
